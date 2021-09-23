@@ -8,6 +8,10 @@ public class BulletController : MonoBehaviour
 
     [SerializeField]
     float speed = 30f;
+
+    public delegate void ScoreUpdate(int addition);
+    public static ScoreUpdate onScoreUpdate;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,11 +22,20 @@ public class BulletController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(transform.position.y < -3)
+        if(transform.position.y < -7)
         {
             Destroy(gameObject);
         }
     }
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            int addition = other.gameObject.GetComponent<Enemy>().lifeOnImpact;
+            onScoreUpdate(addition);
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+    }
 }
